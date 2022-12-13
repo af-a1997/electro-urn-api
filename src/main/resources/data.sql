@@ -1,4 +1,6 @@
--- Sample values for database testing. Email addresses are purely 
+-- Sample values for database testing.
+
+USE gaucha_urn;
 
 INSERT INTO voters (first_name, last_name, date_birth) VALUES
 	("Aldo", "Franquez", "1997-08-29"),
@@ -33,7 +35,7 @@ INSERT INTO candidates (first_name, last_name, date_birth) VALUES
 ;
 
 -- Inserts turns 1 and 2, dates are used to control voting constraints and are updated via the HTTP requests.
-INSERT INTO turn (dt_begin, dt_end) VALUES
-	(NOW(), NULL),
-	(NULL, NULL)
+INSERT INTO turn (dt_begin, dt_end, is_active) VALUES
+	(NOW(), NULL, true),
+	(NULL, NULL, false)
 ;
