@@ -1,7 +1,12 @@
 package com.afa1997.electrournapi.mod;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+
 import org.springframework.format.annotation.DateTimeFormat;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "voters")
@@ -18,6 +23,10 @@ public class Voters {
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private String date_birth;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "cndt_voter")
+    private Set<VoteReg> cndt_voter_ref = new HashSet<>();
 
     // Getters and setters:
 
@@ -51,5 +60,15 @@ public class Voters {
 
     public void setDate_birth(String date_birth) {
         this.date_birth = date_birth;
+    }
+
+    // For foreign key:
+
+    public Set<VoteReg> getCndt_voter_ref() {
+        return cndt_voter_ref;
+    }
+
+    public void setCndt_voter_ref(Set<VoteReg> cndt_voter_ref) {
+        this.cndt_voter_ref = cndt_voter_ref;
     }
 }

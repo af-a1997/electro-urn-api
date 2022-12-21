@@ -28,9 +28,9 @@ public class Candidates {
 
     @JsonIgnore
     @OneToMany(mappedBy = "voted_candidate")
-    private Set<VoteReg> voted_by = new HashSet<>();
+    private Set<VoteReg> voter_votes_ref = new HashSet<>();
 
-    // Getters and setters
+    // Getters and setters:
 
     public int getCandidate_id() {
         return candidate_id;
@@ -64,11 +64,11 @@ public class Candidates {
         this.date_birth = date_birth;
     }
 
-    public Set<VoteReg> getVoted_by() {
-        return voted_by;
+    public Set<VoteReg> getVoter_votes_ref() {
+        return voter_votes_ref;
     }
 
-    public void setVoted_by(Set<VoteReg> voted_by) {
-        this.voted_by = voted_by;
+    public void setVoter_votes_ref(Set<VoteReg> voter_votes_ref) {
+        this.voter_votes_ref = voter_votes_ref;
     }
 }

@@ -19,6 +19,10 @@ public class VoteReg {
     // Foreign keys here:
 
     @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "voter_id", referencedColumnName = "id_voter")
+    private Voters cndt_voter;
+
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "candidate_to", referencedColumnName = "id_ct")
     private CandidateTypes chosen_role;
 
@@ -46,6 +50,16 @@ public class VoteReg {
 
     public Candidates getVoted_candidate() {
         return voted_candidate;
+    }
+
+    // For foreign keys:
+
+    public Voters getCndt_voter() {
+        return cndt_voter;
+    }
+
+    public void setCndt_voter(Voters cndt_voter) {
+        this.cndt_voter = cndt_voter;
     }
 
     public void setVoted_candidate(Candidates voted_candidate) {
