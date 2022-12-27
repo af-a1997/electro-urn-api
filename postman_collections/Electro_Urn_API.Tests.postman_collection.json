@@ -1,0 +1,230 @@
+{
+	"info": {
+		"_postman_id": "f6ba2514-aec7-4fcf-84db-f542a72d1e42",
+		"name": "Electro_Urn_API.Tests",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "24548874"
+	},
+	"item": [
+		{
+			"name": "Get existing candidate",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:9999/candidate/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9999",
+					"path": [
+						"candidate",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Test response for non-existing candidate",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:9999/candidate/1000",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9999",
+					"path": [
+						"candidate",
+						"1000"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Register sample candidate",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"content-type": true
+				}
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"first_name\": \"Test\",\r\n    \"last_name\": \"Candidate\",\r\n    \"date_birth\": \"1993-06-21\"\r\n}"
+				},
+				"url": {
+					"raw": "http://localhost:9999/candidate/reg",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9999",
+					"path": [
+						"candidate",
+						"reg"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Shift through voting turn cycle",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:9999/voting/shift",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9999",
+					"path": [
+						"voting",
+						"shift"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Submit sample vote",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"content-type": true
+				}
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\t\"id_ct\": 5,\r\n\t\"candidate_id\": 4,\r\n\t\"voter_id\": 1\r\n}"
+				},
+				"url": {
+					"raw": "http://localhost:9999/vote/submit",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9999",
+					"path": [
+						"vote",
+						"submit"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Submit sample blank vote with only voter ID",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"content-type": true
+				}
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\t\"voter_id\": 1\r\n}"
+				},
+				"url": {
+					"raw": "http://localhost:9999/vote/submit",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9999",
+					"path": [
+						"vote",
+						"submit"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Submit sample blank vote with only voter ID and candidate ID",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"content-type": true
+				}
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\t\"voter_id\": 1,\r\n\t\"candidate_id\": 1\r\n}"
+				},
+				"url": {
+					"raw": "http://localhost:9999/vote/submit",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9999",
+					"path": [
+						"vote",
+						"submit"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "End turn and get most voted by role",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:9999/voting/end_turn",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9999",
+					"path": [
+						"voting",
+						"end_turn"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

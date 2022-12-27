@@ -39,3 +39,13 @@ INSERT INTO turn (dt_begin, dt_end, is_active) VALUES
 	(NOW(), NULL, true),
 	(NULL, NULL, false)
 ;
+
+-- Inserts some sample votes, these are used to quickly test getting most voted candidates by role, such as most voted for president.
+INSERT INTO vote_reg (dt_vote, turn_id, candidate_to, voter_id, vt_cndt_id) VALUES
+    (NOW(), 1, 3, 1, 2),
+    (NOW(), 1, 3, 2, 2),
+    (NOW(), 1, 2, 1, 2),
+    (NOW(), 1, 2, 2, 4),
+    (NOW(), 1, 2, 1, 4),
+    (NOW(), 1, 1, 1, 4)
+;

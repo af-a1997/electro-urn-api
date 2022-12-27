@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.stereotype.Controller;
 
-import java.util.List;
 import java.util.Optional;
 import java.time.LocalDate;
 
@@ -29,17 +28,22 @@ public class Ctrl_Turn {
             return ResponseEntity.notFound().build();
     }
 
-    // Changes active voting turn by cycling through three possible states, advancing per request to </end_turn>. There's always two turns created at start from [data.sql] and these are being used per the assignment's specification.
-    @RequestMapping(value = "/end_turn", method = RequestMethod.GET)
-    public ResponseEntity<Turn> endTurn(){
-        List<Turn> list_of_turns = repo_t.findAll();
+    // Shifts through voting turn cycle generated upon the initial start-up, there's three possible states, advancing per request to </voting/shift>, these states are described on [utils.GetActiveTurn]. To shift the through the cycle WHILE making the calculations, send an empty request to </voting/end_turn>.
+    @RequestMapping(value = "/voting/shift", method = RequestMethod.GET)
+    public ResponseEntity<Turn> shiftActTurn(){
         Turn save_turn_changes_1 = repo_t.findById(1).orElse(null);
         Turn save_turn_changes_2 = repo_t.findById(2).orElse(null);
 
-        // If no voting turn is active, enable first turn.
-        if(!list_of_turns.get(0).isIs_active() && !list_of_turns.get(1).isIs_active()){
-            System.out.println("Turn 1 is on");
+        int turn_no = 0;
+        if(save_turn_changes_1.isIs_active())
+            turn_no = 1;
+        else if(save_turn_changes_2.isIs_active())
+            turn_no = 2;
 
+        // TODO: may want to remove, as it's used for testing if the turn number is coming through.
+        System.out.println("Active turn = " + turn_no);
+
+        if(turn_no == 0){
             save_turn_changes_1.setDt_begin(LocalDate.now().toString());
             save_turn_changes_1.setDt_end(null);
             save_turn_changes_1.setIs_active(true);
@@ -47,25 +51,19 @@ public class Ctrl_Turn {
             save_turn_changes_2.setDt_begin(null);
             save_turn_changes_2.setDt_end(null);
         }
-        // If turn 1 is active, end it and activate turn 2.
-        else if(list_of_turns.get(0).isIs_active() && !list_of_turns.get(1).isIs_active()) {
-            System.out.println("Turn 1 is off, and turn 2 is on");
-
+        else if(turn_no == 1) {
             save_turn_changes_1.setDt_end(LocalDate.now().toString());
             save_turn_changes_2.setDt_begin(LocalDate.now().toString());
 
             save_turn_changes_1.setIs_active(false);
             save_turn_changes_2.setIs_active(true);
         }
-        // If turn 2 is active, end it.
-        else if(list_of_turns.get(1).isIs_active() && !list_of_turns.get(0).isIs_active()){
-            System.out.println("Turn 2 is off");
-
+        else if(turn_no == 2){
             save_turn_changes_2.setDt_end(LocalDate.now().toString());
             save_turn_changes_2.setIs_active(false);
         }
 
-        // Register changes to voting turn 1 and 2.
+        // Update voting turns 1 and 2 states as needed.
 
         save_turn_changes_1.setId_turn(1);
         repo_t.save(save_turn_changes_1);
@@ -73,7 +71,7 @@ public class Ctrl_Turn {
         save_turn_changes_2.setId_turn(2);
         repo_t.save(save_turn_changes_2);
 
-        // Just a 202 status response.
-        return ResponseEntity.accepted().build();
+        // Response to tell the user the shift was done.
+        return ResponseEntity.ok().build();
     }
 }

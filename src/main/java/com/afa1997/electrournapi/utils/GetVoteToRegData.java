@@ -1,4 +1,4 @@
-package com.afa1997.electrournapi.mod;
+package com.afa1997.electrournapi.utils;
 
 // This is an auxiliary class to get data from the JSON input when sending a vote.
 public class GetVoteToRegData {
