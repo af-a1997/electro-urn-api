@@ -20,6 +20,11 @@ public class SvcImpl_VG implements Svc_VG {
     }
 
     @Override
+    public List<Integer> listCountOfVotesPerCto() {
+        return repo_votereg.listCountOfVotesPerCto();
+    }
+
+    @Override
     public VoteReg findById(int param_id_vg) {
         return repo_votereg.findById(param_id_vg).get();
     }

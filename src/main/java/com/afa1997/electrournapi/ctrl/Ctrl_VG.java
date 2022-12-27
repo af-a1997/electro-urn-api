@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.stereotype.Controller;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -92,18 +93,93 @@ public class Ctrl_VG {
         return ResponseEntity.ok().build();
     }
 
-    // TODO: finish implementing feature to shift turn and calculate votes.
     @RequestMapping(value = "/voting/end_turn", method = RequestMethod.GET)
     public ResponseEntity<ArrayNode> finalizeVotingTurn(){
+        // Get list of voted candidates.
         List<VoteReg> vt_rslt = repo_votereg.countTop1ByCandidate_to();
+        ArrayList<String> roles_with_winner = new ArrayList<>();
 
-        return ResponseEntity.ok().body(buildResponseVG(vt_rslt));
+        // Gets both turns information, used to shift through turns depending of roles with a winner.
+        Turn turn_1_data = repo_t.findById(1).orElse(null);
+        Turn turn_2_data = repo_t.findById(2).orElse(null);
+
+        boolean presi_chosen = false, gov_chosen = false, senator_chosen = false, fedrep_chosen = false, intstrep_chosen = false;
+        int voting_act = 0;
+
+        // Check if there's winners for each of these roles, per the specification of the assignment: senator, federal representative and intrastate representative. Also, if there's no chosen president and/or governor, start second round.
+        for(int x = 0 ; x < vt_rslt.size() ; x++) {
+            if(vt_rslt.get(x).getChosen_role().getId_ct() == 1)
+                presi_chosen = true;
+            else if(vt_rslt.get(x).getChosen_role().getId_ct() == 2)
+                gov_chosen = true;
+            else if(vt_rslt.get(x).getChosen_role().getId_ct() == 3)
+                senator_chosen = true;
+            else if(vt_rslt.get(x).getChosen_role().getId_ct() == 4)
+                fedrep_chosen = true;
+            else if(vt_rslt.get(x).getChosen_role().getId_ct() == 5)
+                intstrep_chosen = true;
+        }
+
+        // In order to begin the second round, either/both president and governor MUST NOT have been chosen, additionaly, the other three roles MUST have a winner.
+        if(senator_chosen && fedrep_chosen && intstrep_chosen) {
+            // If both president and governor were chosen, tell the user there's no need for a second round of votes, which won't begin.
+            if(presi_chosen && gov_chosen && turn_1_data.isIs_active()) {
+                voting_act = 3;
+
+                // Voting period ends here.
+                turn_1_data.setDt_end(LocalDate.now().toString());
+                turn_1_data.setIs_active(false);
+                repo_t.save(turn_1_data);
+            }
+            // Same as above but in the case president and/or governor needed to be chosen on turn 2.
+            else if(presi_chosen && gov_chosen && turn_2_data.isIs_active()) {
+                voting_act = 2;
+
+                // Voting period ends here.
+                turn_2_data.setDt_end(LocalDate.now().toString());
+                turn_2_data.setIs_active(false);
+                repo_t.save(turn_2_data);
+            }
+            // Otherwise, if either/both president and governor winners are missing, tell this to the user and start second round.
+            else {
+                voting_act = 1;
+
+                // Shift to second turn.
+                turn_1_data.setDt_end(LocalDate.now().toString());
+                turn_1_data.setIs_active(false);
+                turn_2_data.setDt_begin(LocalDate.now().toString());
+                turn_2_data.setIs_active(true);
+
+                // Save active turn state.
+                turn_1_data.setId_turn(1);
+                repo_t.save(turn_1_data);
+                turn_2_data.setId_turn(2);
+                repo_t.save(turn_2_data);
+            }
+        }
+
+        // Used to tell the user in the response which roles don't have a winner (if any) and if a second round of voting begins.
+        if(!presi_chosen)
+            roles_with_winner.add("president");
+        if(!gov_chosen)
+            roles_with_winner.add("governor");
+        if(!senator_chosen)
+            roles_with_winner.add("senator");
+        if(!fedrep_chosen)
+            roles_with_winner.add("federal representative");
+        if(!intstrep_chosen)
+            roles_with_winner.add("intrastate representative");
+
+        // Build the JSON and put it in the body of the response, the body shows the winning candidates for each role.
+        return ResponseEntity.ok().body(buildResponseWinnersVG(vt_rslt, voting_act, roles_with_winner));
     }
 
     // Prepares response for getting most voted candidates by role.
     @Autowired
     ObjectMapper om_vg;
-    public ArrayNode buildResponseVG(List<VoteReg> in_lvg){
+    public ArrayNode buildResponseWinnersVG(List<VoteReg> in_lvg, int vg_st, ArrayList<String> missing_roles){
+        int votes_count = 0;
+
         ArrayNode an_vg_ranks = om_vg.createArrayNode();
 
         for(int x = 0 ; x < in_lvg.size() ; x++) {
@@ -111,10 +187,41 @@ public class Ctrl_VG {
 
             objn_vg.put("candidate_name", in_lvg.get(x).getVoted_candidate().getFirst_name() + " " + in_lvg.get(x).getVoted_candidate().getLast_name());
             objn_vg.put("elected_to", in_lvg.get(x).getChosen_role().getName());
-            objn_vg.put("votes_count", in_lvg.size());
+            objn_vg.put("votes_count", repo_votereg.listCountOfVotesPerCto().get(x));
 
             an_vg_ranks.add(objn_vg);
         }
+
+        ObjectNode voting_can_end = om_vg.createObjectNode();
+
+        StringBuilder voting_end_msg = new StringBuilder();
+
+        if(vg_st == 0)
+            voting_end_msg.append("The following role(s) don't have winners yet: ");
+        else if(vg_st == 1)
+            voting_end_msg.append("Senator and both representative types have winners, but the following role(s) must be voted on the second round that just began: ");
+        else if(vg_st == 2)
+            voting_end_msg.append("Turn 2 finished with all roles having winners");
+        else if(vg_st == 3)
+            voting_end_msg.append("All roles have a winner, there's no need to start a second turn");
+
+        if(missing_roles.size() > 0 && vg_st < 2) {
+            for (int h = 0; h < missing_roles.size(); h++) {
+                voting_end_msg.append(missing_roles.get(h));
+
+                // This and the appended dot below are for message aesthetic.
+                if (h < missing_roles.size() - 2)
+                    voting_end_msg.append(", ");
+                else if (h == missing_roles.size() - 2)
+                    voting_end_msg.append(" and ");
+            }
+        }
+
+        voting_end_msg.append(".");
+
+        voting_can_end.put("did_voting_end", voting_end_msg.toString());
+
+        an_vg_ranks.add(voting_can_end);
 
         return an_vg_ranks;
     }

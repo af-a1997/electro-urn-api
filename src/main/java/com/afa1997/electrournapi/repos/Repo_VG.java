@@ -16,6 +16,12 @@ public interface Repo_VG extends JpaRepository<VoteReg, Integer> {
      *
      * JPQL is largely similar to SQL but it has some glaring differences, learn more at: < https://en.wikibooks.org/wiki/Java_Persistence/JPQL >.
      */
-    @Query(value = "SELECT *, COUNT(candidate_to) AS ccto FROM vote_reg GROUP BY candidate_to;", nativeQuery = true)
+    @Query(value = "SELECT * FROM vote_reg GROUP BY candidate_to;", nativeQuery = true)
     List<VoteReg> countTop1ByCandidate_to();
+
+    // Additional method needed to get the amount of votes per role.
+    @Query(value = "SELECT COUNT(candidate_to) AS ccto FROM vote_reg GROUP BY candidate_to;", nativeQuery = true)
+    List<Integer> listCountOfVotesPerCto();
+
+    // TODO: find out how to get [ccto]. Reading: < https://www.baeldung.com/spring-data-jpa-query >
 }

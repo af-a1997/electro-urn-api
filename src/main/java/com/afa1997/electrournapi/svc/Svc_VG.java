@@ -6,6 +6,7 @@ import java.util.List;
 
 public interface Svc_VG {
     List<VoteReg> findAll();
+    List<Integer> listCountOfVotesPerCto();
 
     VoteReg findById(int param_id_vg);
     VoteReg findTop1ByCandidate_types(int param_id_ct);
