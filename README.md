@@ -44,14 +44,14 @@ The API is set-up to be ran locally, here's instructions on how to install it.
 ![explorer,Documentos_2022-12-27_15-34-58-993.png](help_img/explorer,Documentos_2022-12-27_15-34-58-993.png)
 7) You'll likely need to set up the main class. Considering the example above (in IntelliJ IDEA), this is done by pressing the dropdown next to the `[Run]` toolbar button at the top and selecting the `[Edit Configurations]` menu entry, like this:<br/>
 ![idea64,electro-urn-api_–_README.md_2022-12-27_15-38-44-044.png](help_img/idea64,electro-urn-api_–_README.md_2022-12-27_15-38-44-044.png)
-8) Follow the graphical steps in the following picture to define which is the main class, in the project files, it's located at [`/src/main/java/com/afa1997/electrournapi/ElectroUrnApiApplication.java`](/src/main/java/com/afa1997/electrournapi/ElectroUrnApiApplication.java). Do note that you may need to download and install a JDK.
-[![idea64,RunDebug_Configurations_2022-12-27_15-37-41-975.png](help_img/idea64,RunDebug_Configurations_2022-12-27_15-37-41-975.png)](help_img/idea64,RunDebug_Configurations_2022-12-27_15-37-41-975.png)
+8) Follow the graphical steps in the following picture to define which is the main class, in the project files, it's located at [`/src/main/java/com/afa1997/electrournapi/ElectroUrnApiApplication.java`](/src/main/java/com/afa1997/electrournapi/ElectroUrnApiApplication.java). Do note that you may need to download and install a JDK (step 3 on the picture).
+![idea64,RunDebug_Configurations_2022-12-27_15-37-41-975.png](help_img/idea64,RunDebug_Configurations_2022-12-27_15-37-41-975.png)
 9) When this is done, run the project by pressing the green ":arrow_forward:" button on the top toolbar, and wait until the run log that appears below shows the Tomcat port. This is an example of a message you get:
 ```
 2022-12-27T15:46:02.394-03:00  INFO 8568 --- [  restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 9999 (http) with context path ''
 ```
 
-Upon first initiation, `the database is created automatically with all the tables and relevant relationships, as well as some sample data to help us test code quickly, so you won't need to do much tinkering.
+Upon first initiation, the database is created automatically with all the tables and relevant relationships, as well as some sample data to help us test code quickly, so you won't need to do much tinkering.
 
 ## Plans
 
