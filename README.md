@@ -29,7 +29,7 @@ In this folder, you can find collections that can be downloaded and imported to 
 
 ## Database and software architecture diagrams
 
-As said above, this API is a software architecture assignment, so coding the API while also making the diagrams are part of the required 
+As said above, this API is a software architecture assignment, so coding the API while also making the diagrams are part of the required files, refer to the [`/models`](/models) folder for more informations and the diagram files.
 
 ## How to use?
 
@@ -50,6 +50,8 @@ The API is set-up to be ran locally, here's instructions on how to install it.
 ```
 2022-12-27T15:46:02.394-03:00  INFO 8568 --- [  restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 9999 (http) with context path ''
 ```
+10) That's it! Start sending requests to `http://localhost:9999`. Check [the controller classes](/src/main/java/com/afa1997/electrournapi/ctrl) for the access points and whether to use GET or POST.
+11) If for some reason the configured port is already in use or you want to use another port, change the `server_port`'s value on the [application.properties](/src/main/resources/application.properties) file, simply by selecting the number of any other available port. Once you do, try running the project again.
 
 Upon first initiation, the database is created automatically with all the tables and relevant relationships, as well as some sample data to help us test code quickly, so you won't need to do much tinkering.
 
