@@ -22,6 +22,7 @@ public class Voters {
     private String last_name;
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    @Column(columnDefinition = "DATE")
     private String date_birth;
 
     @JsonIgnore

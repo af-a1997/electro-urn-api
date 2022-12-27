@@ -10,5 +10,5 @@ public interface Svc_VG {
     VoteReg findById(int param_id_vg);
     VoteReg findTop1ByCandidate_types(int param_id_ct);
     VoteReg save(VoteReg param_vg_data);
-    VoteReg countTop1ByCandidate_to(int p_id_ct);
+    VoteReg countTop1ByCandidate_to();
 }

@@ -35,7 +35,7 @@ public class SvcImpl_VG implements Svc_VG {
     }
 
     @Override
-    public VoteReg countTop1ByCandidate_to(int p_id_ct) {
-        return countTop1ByCandidate_to(p_id_ct);
+    public VoteReg countTop1ByCandidate_to() {
+        return countTop1ByCandidate_to();
     }
 }

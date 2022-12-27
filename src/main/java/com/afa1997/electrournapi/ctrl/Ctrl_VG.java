@@ -4,6 +4,9 @@ import com.afa1997.electrournapi.mod.*;
 import com.afa1997.electrournapi.repos.*;
 import com.afa1997.electrournapi.utils.*;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -91,9 +94,28 @@ public class Ctrl_VG {
 
     // TODO: finish implementing feature to shift turn and calculate votes.
     @RequestMapping(value = "/voting/end_turn", method = RequestMethod.GET)
-    public ResponseEntity<VoteReg> finalizeVotingTurn(){
-        List<VoteReg> vt_rslt = repo_votereg.countTop1ByCandidate_to(0);
+    public ResponseEntity<ArrayNode> finalizeVotingTurn(){
+        List<VoteReg> vt_rslt = repo_votereg.countTop1ByCandidate_to();
 
-        return ResponseEntity.ok().body(vt_rslt.get(0));
+        return ResponseEntity.ok().body(buildResponseVG(vt_rslt));
+    }
+
+    // Prepares response for getting most voted candidates by role.
+    @Autowired
+    ObjectMapper om_vg;
+    public ArrayNode buildResponseVG(List<VoteReg> in_lvg){
+        ArrayNode an_vg_ranks = om_vg.createArrayNode();
+
+        for(int x = 0 ; x < in_lvg.size() ; x++) {
+            ObjectNode objn_vg = om_vg.createObjectNode();
+
+            objn_vg.put("candidate_name", in_lvg.get(x).getVoted_candidate().getFirst_name() + " " + in_lvg.get(x).getVoted_candidate().getLast_name());
+            objn_vg.put("elected_to", in_lvg.get(x).getChosen_role().getName());
+            objn_vg.put("votes_count", in_lvg.size());
+
+            an_vg_ranks.add(objn_vg);
+        }
+
+        return an_vg_ranks;
     }
 }

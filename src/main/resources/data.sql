@@ -10,11 +10,11 @@ INSERT INTO voters (first_name, last_name, date_birth) VALUES
 /*
 	Candidate types based on the homework's specifications, IDs are as follows:
 	
-	* 0 = President
-	* 1 = Governor
-	* 2 = Senator
-	* 3 = Federal representative
-	* 4 = Intrastate representative
+	* 1 = President
+	* 2 = Governor
+	* 3 = Senator
+	* 4 = Federal representative
+	* 5 = Intrastate representative
 */
 INSERT INTO candidate_types (name, notes) VALUES
 	("President", "N/A"),

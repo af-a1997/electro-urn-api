@@ -12,6 +12,7 @@ public class VoteReg {
     private int id_vote;
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    @Column(columnDefinition = "DATE")
     private String dt_vote;
 
     private int turn_id;
