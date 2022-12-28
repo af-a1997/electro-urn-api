@@ -82,27 +82,38 @@
 			"response": []
 		},
 		{
-			"name": "Shift through voting turn cycle",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://localhost:9999/voting/shift",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "9999",
-					"path": [
-						"voting",
-						"shift"
-					]
+			"name": "Vote a random candidate",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Function to get a random INT number, these are used to choose one random ID depending of the field.\r",
+							"function rndID(max) {\r",
+							"    return Math.floor(Math.random() * max) + 1;\r",
+							"}\r",
+							"\r",
+							"// Randomly selects one candidate ID, the ID is then sent to the raw body wherever the user places the variable \"{{CHOOSE_CNDT_ID}}\". Also do the same with candidate type and voter IDs, which have their own variables as stated below.\r",
+							"pm.environment.set(\"CHOOSE_CNDT_ID\",rndID(6));\r",
+							"pm.environment.set(\"CHOOSE_CT_ID\",rndID(5));\r",
+							"pm.environment.set(\"CHOOSE_VT_ID\",rndID(2));\r",
+							"\r",
+							"// Once done, move onto the next request.\r",
+							"postman.setNextRequest(\"Get winners on turn\");"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
 				}
-			},
-			"response": []
-		},
-		{
-			"name": "Submit sample vote",
+			],
 			"protocolProfileBehavior": {
 				"disabledSystemHeaders": {
 					"content-type": true
@@ -119,7 +130,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n\t\"id_ct\": 3,\r\n\t\"candidate_id\": 1,\r\n\t\"voter_id\": 1\r\n}"
+					"raw": "{\r\n    \"id_ct\": {{CHOOSE_CT_ID}},\r\n    \"candidate_id\": {{CHOOSE_CNDT_ID}},\r\n    \"voter_id\": {{CHOOSE_VT_ID}}\r\n}"
 				},
 				"url": {
 					"raw": "http://localhost:9999/vote/submit",
